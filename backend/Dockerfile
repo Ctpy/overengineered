@@ -1,17 +1,15 @@
-FROM gradle:latest AS build
+FROM gradle:jdk18-alpine as build
 
-COPY --chown=gradle:gradle . /home/gradle/src
-
-WORKDIR /home/gradle/src
-
-RUN ./gradlew build --no-daemon
+WORKDIR /backend
+COPY build.gradle .
+COPY settings.gradle .
+COPY . .
+RUN gradle build --no-daemon
 
 FROM openjdk:21-ea-18-slim-buster
 
 WORKDIR /backend
 
-ARG JAR_FILE=build/libs/*.jar
-
-COPY ${JAR_FILE} backend.jar
+COPY --from=build /backend/build/libs/*.jar backend.jar
 
 CMD ["java", "-jar", "backend.jar"]
