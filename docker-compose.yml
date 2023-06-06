@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: app
+    image: app:latest
+    build: ./app
+    restart: always
+    ports:
+      - 3000:3000
+  backend:
+    container_name: backend
+    image: backend:latest
+    build: ./backend
+    restart: always
+    ports:
+      - 8080:8080
